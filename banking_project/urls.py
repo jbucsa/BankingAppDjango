@@ -20,6 +20,8 @@ Created by: Justin Bucsa
 from django.contrib import admin
 from django.urls import path, include
 from django.contrib.auth import views as auth_views
+from django.conf import settings
+from django.conf.urls.static import static
 
 from accounts import views as account_views
 from banking import views as banking_views
@@ -54,3 +56,6 @@ urlpatterns = [
     path('crypto/sell/', crypto_views.sell_crypto_view, name='sell_crypto'),
     path('crypto/admin/', crypto_views.admin_approve_transactions, name='admin_approve'),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
