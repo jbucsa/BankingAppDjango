@@ -35,17 +35,18 @@ ALLOWED_HOSTS = ['bankingappdjango-production.up.railway.app']
 
 # Application definition
 INSTALLED_APPS = [
+
+    'accounts',
+    'banking',
+    'crypto',
+    'crispy_forms',
+    'crispy_bootstrap5',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'accounts',
-    'banking',
-    'crypto',
-    'crispy_forms',
-    'crispy_bootstrap5',
 ]
 
 MIDDLEWARE = [
