@@ -1,0 +1,55 @@
+<!-- admin_approve.html -->
+{% extends "base.html" %}
+
+{% block title %}Admin Approve Transactions{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-10">
+        <h2>Pending Crypto Transactions</h2>
+        <div class="card mt-3">
+            <div class="card-body">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>User</th>
+                            <th>Type</th>
+                            <th>Crypto</th>
+                            <th>Amount</th>
+                            <th>Price</th>
+                            <th>Total</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for transaction in transactions %}
+                        <tr>
+                            <td>{{ transaction.timestamp|date:"M d, Y H:i" }}</td>
+                            <td>{{ transaction.user.username }}</td>
+                            <td>{{ transaction.get_transaction_type_display }}</td>
+                            <td>{{ transaction.crypto.symbol }}</td>
+                            <td>{{ transaction.amount|floatformat:8 }}</td>
+                            <td>${{ transaction.price_at_transaction|floatformat:2 }}</td>
+                            <td>${{ transaction.total_value|floatformat:2 }}</td>
+                            <td>
+                                <form method="post" class="d-inline">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="transaction_id" value="{{ transaction.id }}">
+                                    <button type="submit" name="action" value="approve" class="btn btn-sm btn-success">Approve</button>
+                                    <button type="submit" name="action" value="reject" class="btn btn-sm btn-danger">Reject</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="8">No pending transactions.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

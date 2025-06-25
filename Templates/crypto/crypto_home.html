@@ -1,0 +1,89 @@
+<!-- crypto_home.html -->
+{% extends "base.html" %}
+
+{% block title %}Crypto Wallet{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <h2>Your Crypto Wallet</h2>
+        <div class="card mt-3">
+            <div class="card-body">
+                <h5 class="card-title">Crypto Account Balance: ${{ crypto_account.balance|floatformat:2 }}</h5>
+
+                <div class="btn-group mt-2">
+                    <a href="{% url 'transfer_to_crypto' %}" class="btn btn-primary mb-3">Add Funds</a>
+                    <a href="{% url 'transfer_from_crypto' %}" class="btn btn-info mb-3">Transfer to Bank</a>
+                    <a href="{% url 'buy_crypto' %}" class="btn btn-success mb-3">Buy Crypto</a>
+                    <a href="{% url 'sell_crypto' %}" class="btn btn-danger mb-3">Sell Crypto</a>
+                </div>
+
+                <h4 class="mt-4">Available Cryptocurrencies</h4>
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Symbol</th>
+                                <th>Price</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for crypto in cryptos %}
+                            <tr>
+                                <td>{{ crypto.name }}</td>
+                                <td>{{ crypto.symbol }}</td>
+                                <td>${{ crypto.current_price|floatformat:2 }}</td>
+                                <td>
+                                    <a href="{% url 'buy_crypto' %}" class="btn btn-sm btn-success">Buy</a>
+                                    <a href="{% url 'sell_crypto' %}" class="btn btn-sm btn-danger">Sell</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                
+                <h4 class="mt-4">Your Crypto Transactions</h4>
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Type</th>
+                                <th>Crypto</th>
+                                <th>Amount</th>
+                                <th>Price</th>
+                                <th>Total</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for transaction in transactions %}
+                            <tr>
+                                <td>{{ transaction.timestamp|date:"M d, Y H:i" }}</td>
+                                <td>{{ transaction.get_transaction_type_display }}</td>
+                                <td>{{ transaction.crypto.symbol }}</td>
+                                <td>{{ transaction.amount|floatformat:8 }}</td>
+                                <td>${{ transaction.price_at_transaction|floatformat:2 }}</td>
+                                <td>${{ transaction.total_value|floatformat:2 }}</td>
+                                <td>
+                                    <span class="badge bg-{% if transaction.status == 'completed' %}success{% elif transaction.status == 'rejected' %}danger{% else %}warning{% endif %}">
+                                        {{ transaction.get_status_display }}
+                                    </span>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="7">No crypto transactions found.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
