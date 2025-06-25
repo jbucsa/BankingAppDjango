@@ -1,0 +1,116 @@
+<!-- home.html -->
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <h2>Your Accounts</h2>
+        <div class="card mt-3">
+            <div class="card-body">
+                <h5 class="card-title">Total Balance: ${{ total_balance|floatformat:2 }}</h5>
+                <a href="{% url 'create_account' %}" class="btn btn-primary mb-3">Open New Account</a>
+                
+                <div class="list-group">
+                    {% for account in accounts %}
+                    <div class="list-group-item">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1">{{ account.get_account_type_display }} Account</h5>
+                            <span>${{ account.balance|floatformat:2 }}</span>
+                        </div>
+                        <p class="mb-1">Account Number: {{ account.account_number }}</p>
+                        <div class="btn-group mt-2">
+                            <a href="{% url 'deposit' account.id %}" class="btn btn-sm btn-success">Deposit</a>
+                            <a href="{% url 'withdraw' account.id %}" class="btn btn-sm btn-warning">Withdraw</a>
+                            <a href="{% url 'transfer' account.id %}" class="btn btn-sm btn-info">Transfer</a>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="list-group-item">
+                        <p>You don't have any accounts yet.</p>
+                        <a href="{% url 'create_account' %}" class="btn btn-primary">Open Your First Account</a>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <h2>Your Portfolio</h2>
+        <div class="card mt-3">
+            <div class="card-body">
+                <h5 class="card-title">Total Balance: ${{ total_balance|floatformat:2 }}</h5>
+                
+                <!-- Time Series Chart -->
+                <div class="card mt-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5>Account Value History</h5>
+                        <div class="btn-group">
+                            <a href="?range=1h" class="btn btn-sm {% if time_range == '1h' %}btn-primary{% else %}btn-outline-secondary{% endif %}">1H</a>
+                            <a href="?range=1d" class="btn btn-sm {% if time_range == '1d' %}btn-primary{% else %}btn-outline-secondary{% endif %}">1D</a>
+                            <a href="?range=7d" class="btn btn-sm {% if time_range == '7d' %}btn-primary{% else %}btn-outline-secondary{% endif %}">7D</a>
+                            <a href="?range=1m" class="btn btn-sm {% if time_range == '1m' %}btn-primary{% else %}btn-outline-secondary{% endif %}">1M</a>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="timeChart" height="250"></canvas>
+                    </div>
+                </div>
+
+                <!-- Pie Chart -->
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <h5>Current Allocation</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="pieChart" height="250"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Time Series Chart
+new Chart(timeCtx, {
+    type: 'line',
+    data: {
+        labels: JSON.parse('{{ time_series.labels|escapejs }}'),
+        datasets: JSON.parse('{{ time_series.datasets|escapejs }}')
+    },
+    options: {
+        responsive: true,
+        scales: {
+            y: {
+                beginAtZero: false,
+                ticks: {
+                    callback: function(value) {
+                        return '$' + value.toLocaleString();
+                    }
+                }
+            }
+        }
+    }
+});
+
+// Pie Chart
+new Chart(pieCtx, {
+    type: 'pie',
+    data: {
+        labels: JSON.parse('{{ pie_data.labels|escapejs }}'),
+        datasets: JSON.parse('{{ pie_data.datasets|escapejs }}')
+    },
+    options: {
+        responsive: true
+    }
+});
+</script>
+
+{% endblock %}

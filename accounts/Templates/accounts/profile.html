@@ -1,0 +1,23 @@
+<!-- profile.html -->
+{% extends "base.html" %}
+
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <h2>Your Profile</h2>
+        <div class="card mt-3">
+            <div class="card-body">
+                <h5 class="card-title">User Information</h5>
+                <p><strong>Username:</strong> {{ user.username }}</p>
+                <p><strong>Email:</strong> {{ user.email }}</p>
+                {% if user.userprofile.phone_number %}
+                <p><strong>Phone:</strong> {{ user.userprofile.phone_number }}</p>
+                {% endif %}
+                <a href="#" class="btn btn-primary">Edit Profile</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

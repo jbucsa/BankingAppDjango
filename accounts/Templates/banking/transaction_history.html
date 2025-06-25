@@ -1,0 +1,42 @@
+<!-- transaction_history.html -->
+{% extends "base.html" %}
+
+{% block title %}Transaction History{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-10">
+        <h2>Transaction History</h2>
+        <div class="card mt-3">
+            <div class="card-body">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Account</th>
+                            <th>Type</th>
+                            <th>Amount</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for transaction in transactions %}
+                        <tr>
+                            <td>{{ transaction.timestamp|date:"M d, Y H:i" }}</td>
+                            <td>{{ transaction.account.get_account_type_display }}</td>
+                            <td>{{ transaction.get_transaction_type_display }}</td>
+                            <td>${{ transaction.amount|floatformat:2 }}</td>
+                            <td>{{ transaction.description }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5">No transactions found.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
