@@ -4,7 +4,7 @@ charset-normalizer==3.4.2
 crispy-bootstrap5==2025.6
 Django==5.2.3
 django-crispy-forms==2.4
-gunicorn==23.0.0
+gunicorn==20.1.0
 idna==3.10
 packaging==25.0
 python-dotenv==1.1.0
